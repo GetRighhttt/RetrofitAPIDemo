@@ -33,11 +33,36 @@ class MainActivity : AppCompatActivity() {
         /**
          * Methods to display each type of requests
          */
-        //getRequestsWithQueryParameters()
+        getAllAlbums()
+//        getRequestsWithQueryParameters()
         // getRequestsWithPathParameters()
-        uploadAlbum()
+//        uploadAlbum()
     }
 
+    private fun getAllAlbums() {
+        /**
+         * A response that will retrieve all of the albums and display them on the textview.
+         */
+        val responseLiveData: LiveData<Response<AlbumsDataClass>> = liveData {
+            val response = retServiceResponse.getAlbums()
+            emit(response)
+        }
+        // Use LiveData to observe the life cycle and display the data in a scrollview
+        responseLiveData.observe(this, Observer {
+            val albumsList = it.body()?.listIterator()
+            if(albumsList != null) {
+                while(albumsList.hasNext()) {
+                    val albumsItem = albumsList.next()
+                    Log.i("MYTAG", albumsItem.title)
+                    val result = " " + "Album Title : ${albumsItem.title}" + "\n" +
+                            " " + "Album userId : ${albumsItem.userId}" + "\n" +
+                            " " + "Album id : ${albumsItem.id}" + "\n\n\n"
+                    val textView: TextView = findViewById(R.id.textView)
+                    textView.append(result)
+                }
+            }
+        })
+    }
 
     private fun getRequestsWithQueryParameters() {
         /**
@@ -57,7 +82,7 @@ class MainActivity : AppCompatActivity() {
          * getSortedAlbums, getAlbums, etc.
          */
         val responseLiveData: LiveData<Response<AlbumsDataClass>> = liveData {
-            val response = retServiceResponse.getSortedAlbums(3)
+            val response = retServiceResponse.getSortedAlbums(5)
             emit(response)
         }
         // Use LiveData to observe the life cycle and display the data in a scrollview
@@ -67,9 +92,9 @@ class MainActivity : AppCompatActivity() {
                 while(albumsList.hasNext()) {
                     val albumsItem = albumsList.next()
                     Log.i("MYTAG", albumsItem.title)
-                    val result = "" + "Album Title : ${albumsItem.title}" + "\n"
-                    "" + "Album userId : ${albumsItem.userId}" + "\n"
-                    "" + "Album id : ${albumsItem.id}" + "\n\n\n"
+                    val result = " " + "Album Title : ${albumsItem.title}" + "\n" +
+                    " " + "Album userId : ${albumsItem.userId}" + "\n" +
+                    " " + "Album id : ${albumsItem.id}" + "\n\n\n"
                     val textView: TextView = findViewById(R.id.textView)
                     textView.append(result)
                 }
